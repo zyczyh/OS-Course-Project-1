@@ -29,6 +29,8 @@ typedef	char		Bool;		/* Boolean type			*/
 #define	MINSTK		4096		/* minimum process stack size	*/
 #define	NULLSTK		MINSTK		/* process 0 stack size		*/
 #define	MAGIC		0125251		/* unusual value for top of stk	*/
+#define AGESCHED 	1 			/* Age-based scheduler */
+#define LINUXSCHED 	2			/* Linux-based scheduler */
 
 /* Universal return constants */
 
@@ -77,6 +79,7 @@ typedef short	STATWORD[1];	/* machine status for disable/restore	*/
 
 extern	int	rdyhead, rdytail;
 extern	int	preempt;
+extern  int schedtype;  //schedule algorithm type(age/linux-based) 
 
 /* Include types and configuration information */
 
@@ -98,6 +101,8 @@ int kputc(int dev, unsigned char c);
 int main();
 int panic(char *msg);
 int ready(int pid, int resch);
+void setschedclass(int sched_class);
+int getschedclass();
 int resched();
 int set_evec(u_int xnum, u_long handler);
 void trap(int inum);

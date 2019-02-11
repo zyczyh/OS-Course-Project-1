@@ -60,6 +60,9 @@ struct	pentry	{
 	int	fildes[_NFILE];		/* file - device translation	*/
 	int	ppagedev;		/* pageing dgram device		*/
 	int	pwaitret;
+	int goodness;		/* goodness value */
+	int quantum;		/* quantum value */
+	int qremain;		/* remain quantum value */
 };
 
 
