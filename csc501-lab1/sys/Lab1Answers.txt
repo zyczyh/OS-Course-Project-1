@@ -1,0 +1,44 @@
+1. What are the advantages and disadvantages of each of the two scheduling policies? 
+Also, give the advantages and disadvantages of the round robin scheduling policy originally implemented in Xinu.
+
+Aging based scheduler:
+Advantages:
+(1)The algorithm is simple and easy to implement.
+(2) Avoid starvation. Low priority processes imcrease their priority faster than high priority processes, so they surely have the chance to run in the future.
+
+Disadvantages:
+(1) The low priority processes may wait for very long time before excution if there are many high priority processes. Because all waiting processes add the same amount to their priority every time reschedule happens. So if there are more high priority processes the low priority processes have to wait longer.
+(2) High priority process have to wait for low priority process if it can't finish in a period of time.
+
+Linux based scheduler:
+Advantages:
+(1) If process uses it's allocated CPU time partially,  it will be given more time and higher preference in the next epoch.
+(2) Also avoid starvation, moreover, it has epoch which decrease low priority processes wait time, because every process has the chance to run in one epoch.
+
+Disadvantages:
+(1) For new processes that are created during an epoch, they have to wait for the next epoch. Which means if the new process has the highest priority, it also has to wait. 
+(2) If many processes are in ready state, first process with maximum goodness have to wait for long time till all processes finish their quantum.
+
+Xinu round robin scheduler:
+Advantages:
+1) Because this is priority based scheduling, higher priority processes execute first. Since initial quantum is 10 CPU ticks only, a new process with even more priority is created, it will be scheduled to execute next unlike linux based schedule, where new process has to wait till all processes with low priority finish their quantum.
+
+Disadvantages:
+(1) Can't prevent starvation. Low priority process has to wait for all higher priority processes to be executed. In worst cases, they may not even execute.
+
+2. Describe the way each of the schedulers affects the NULL process.
+
+Aging based scheduler:
+For aging based scheduler, the NULL process's priority doesn't change when reschedule happens. So it's priority will always be zero, which is the lowest priority. This make sure it is the last one to run.
+
+Linux based scheduler:
+The defination of goodness value and quantum makes sure the NULL process's goodness vaule is always zero. So it can only run when all other processes can't run.
+
+Xinu round robin scheduler:
+Because the priority of all processes don't change, NULL process's priority is always zero. Makes sure it is the last one to run.
+
+3. Give two suggestions how the above mentioned aging based scheduler could be changed to attain better fairness 
+keeping the fundamental point of incrementing the priority to be the same in your new ideas.
+
+(1) Let the quantum equals to the real priority of the process. Because this can let high priority processes finish earlier.
+(2) Let the increase in priority equals to the waiting time of the process. This will help reduce the wait time of low priority processes.
