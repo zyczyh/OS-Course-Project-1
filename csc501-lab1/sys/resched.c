@@ -49,11 +49,12 @@ int findnextproc()
 	procid = q[rdyhead].qnext;
 	while(procid != rdytail)
 	{
-		if(proctab[procid]->goodness > gvalue)
+		if(proctab[procid].goodness > gvalue)
 		{
-			gvalue = proc[procid]->goodness;
+			gvalue = proctab[procid].goodness;
 			ansproc = procid;
 		}
+		procid = q[procid].qnext;
 	}
 	return ansproc;
 }
@@ -182,7 +183,34 @@ int resched()
 		}
 		else
 		{
-			return STDERR;
+			return SYSERR;
 		}
+	}
+	else
+	{
+		if ( ( (optr= &proctab[currpid])->pstate == PRCURR) &&
+	   (lastkey(rdytail)<optr->pprio)) {
+		return(OK);
+		}
+	
+	/* force context switch */
+
+		if (optr->pstate == PRCURR) {
+			optr->pstate = PRREADY;
+			insert(currpid,rdyhead,optr->pprio);
+		}
+
+	/* remove highest priority process at end of ready list */
+
+		nptr = &proctab[ (currpid = getlast(rdytail)) ];
+		nptr->pstate = PRCURR;		/* mark it currently running	*/
+		#ifdef	RTCLOCK
+			preempt = QUANTUM;		/* reset preemption counter	*/
+		#endif
+	
+		ctxsw((int)&optr->pesp, (int)optr->pirmask, (int)&nptr->pesp, (int)nptr->pirmask);
+	
+		/* The OLD process returns here when resumed. */
+		return OK;
 	}
 }
