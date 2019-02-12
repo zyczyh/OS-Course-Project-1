@@ -151,6 +151,7 @@ int resched()
 				nptr = &proctab[NULLPROC];
 				nptr->pstate = PRCURR;
 				dequeue(NULLPROC);
+				currpid = NULLPROC;
 				#ifdef	RTCLOCK
 					preempt = QUANTUM;
 				#endif
@@ -177,6 +178,7 @@ int resched()
 			nptr = &proctab[index];
 			nptr->pstate = PRCURR;
 			dequeue(index);
+			currpid = index;
 			preempt = nptr->qremain;
 			ctxsw((int)&optr->pesp, (int)optr->pirmask, (int)&nptr->pesp, (int)nptr->pirmask);
 			return OK;
